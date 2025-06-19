@@ -23,7 +23,7 @@ pipeline {
 
         stage('Test') {
             steps {
-                bat 'dotnet test --no-build --logger trx'
+                bat 'dotnet test --no-build --configuration Release --logger "trx;LogFileName=test_results.trx"'
             }
         }
 
