@@ -29,7 +29,7 @@ pipeline {
 
         stage('Publish Artifacts') {
             steps {
-                bat 'dotnet publish MyApp/MyApp.csproj -c Release -o publish'
+                bat 'dotnet publish SeleniumIDE/SeleniumIde.csproj -c Release -o publish'
                 archiveArtifacts artifacts: 'publish/**', fingerprint: true
             }
         }
