@@ -14,16 +14,15 @@ pipeline {
             }
         }
 
-
         stage('Build the project') {
             steps {
-                bat 'dotnet build'
+                bat 'dotnet build --configuration Release'
             }
         }
 
         stage('Test') {
             steps {
-                bat 'dotnet test --no-build --configuration Release --logger "trx;LogFileName=test_results.trx"'
+                bat 'dotnet test --no-build --configuration Release --logger "trx;LogFileName=test_results.trx" --results-directory TestResults'
             }
         }
 
@@ -34,9 +33,15 @@ pipeline {
             }
         }
     }
+
     post {
         always {
-            junit '**/test_results.trx'
+            // Archive the raw .trx test result for inspection
+            archiveArtifacts artifacts: 'TestResults/*.trx', fingerprint: true
+
+            // Optional: If you install and use trx2junit, convert to XML and use:
+            // junit 'TestResults/*.xml'
+
             cleanWs()
         }
     }
