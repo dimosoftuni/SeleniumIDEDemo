@@ -21,21 +21,23 @@ pipeline {
             }
         }
 
-        stage('Run tests') {
+        stage('Test') {
             steps {
-                bat 'dotnet test'
+                bat 'dotnet test --no-build --logger trx'
+            }
+        }
+
+        stage('Publish Artifacts') {
+            steps {
+                bat 'dotnet publish MyApp/MyApp.csproj -c Release -o publish'
+                archiveArtifacts artifacts: 'publish/**', fingerprint: true
             }
         }
     }
     post {
         always {
-            echo 'Pipeline completed'
-        }
-        success {
-            echo 'Build succeeded'
-        }
-        failure {
-            echo 'Build failed'
+            junit '**/test_results.trx'
+            cleanWs()
         }
     }
 }
